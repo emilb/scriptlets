@@ -96,6 +96,10 @@ function installPackages {
 
 }
 
+function setupTimeZone {
+    dpkg-reconfigure tzdata
+}
+
 #####################################################################
 # Disable DNS lookups on ssh login and disable root login
 #####################################################################
@@ -792,10 +796,12 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 EOF
 
-    chown $USERNAME:$USERNAME /home/$USERNAME/.profile
-    chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
-    chown $USERNAME:$USERNAME /home/$USERNAME/.bash_aliases
-    
+    # Create bin directory for scripts
+    mkdir /home/$USERNAME/bin
+
+    # Fix ownership
+    chown -R $USERNAME:$USERNAME /home/$USERNAME
+     
 }
 
 function addCronJobWordPressBackup {
@@ -806,6 +812,7 @@ function addCronJobWordPressBackup {
 # Configure
 #####################################################################
 installPackages
+setupTimeZone
 setupSSH
 setupHostName
 setupIPTables
