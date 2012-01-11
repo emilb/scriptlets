@@ -479,6 +479,9 @@ EOF
     service nginx restart
 
     echo "Installing deployWar script"
+    # Create bin directory for scripts
+    mkdir -p /home/$USERNAME/bin
+    
     cat << EOF > /home/$USERNAME/bin/deployWar
 #!/bin/bash
 
@@ -529,7 +532,7 @@ fi
 echo "Undeploying \$war"
 sudo rm \$webappDir/\$war
 EOF
-
+    
 }
 
 function setupLogwatch {
@@ -849,7 +852,7 @@ alias egrep='egrep --color=auto'
 EOF
 
     # Create bin directory for scripts
-    mkdir /home/$USERNAME/bin
+    mkdir -p /home/$USERNAME/bin
 
     # Fix ownership
     chown -R $USERNAME:$USERNAME /home/$USERNAME
