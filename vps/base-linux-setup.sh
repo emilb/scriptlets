@@ -73,8 +73,8 @@ function installPackages {
         update-java-alternatives -s java-1.7.0-openjdk-amd64 > /dev/null
     fi
 
-    echo "Installing tomcat7 tomcat7-common tomcat7-admin tomcat7-docs..."
-    apt-get -qq -y install tomcat7 tomcat7-common tomcat7-admin tomcat7-docs > /dev/null
+    echo "Installing tomcat7 tomcat7-common tomcat7-admin (tomcat7-docs)..."
+    apt-get -qq -y install tomcat7 tomcat7-common tomcat7-admin > /dev/null
 
     # postfix
     echo "Installing postfix mailutils..."
@@ -89,7 +89,7 @@ function installPackages {
     apt-get -qq -y install logwatch > /dev/null
 
     # ntp
-    echo "Installing ntp ntpdate...0"
+    echo "Installing ntp ntpdate..."
     apt-get -qq -y install ntp ntpdate > /dev/null
     
     echo "Installations done"
