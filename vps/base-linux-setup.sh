@@ -477,62 +477,6 @@ EOF
 
     echo "Restarting nginx"
     service nginx restart
-
-    echo "Installing deployWar script"
-    # Create bin directory for scripts
-    mkdir -p /home/$USERNAME/bin
-    
-    cat << EOF > /home/$USERNAME/bin/deployWar
-#!/bin/bash
-
-webappDir="/var/lib/tomcat7/webapps"
-war=\$1
-
-die () {
-    echo >&2 "\$@"
-    exit 1
-}
-
-[ "\$#" -eq 1 ] || die "1 argument required, \$# provided"
-
-if [ ! -f "\$war" ]
-then
-    die "\$war was not found"
-fi
-
-echo "Deploying \$war to \$webappDir"
-sudo cp \$war \$webappDir
-EOF
-    
-    echo "Installing undeployWar script"
-    cat << EOF > /home/$USERNAME/bin/undeployWar
-#!/bin/bash
-
-webappDir="/var/lib/tomcat7/webapps"
-war=\$1
-
-die () {
-    echo >&2 "\$@"
-    exit 1
-}
-
-[ "\$#" -eq 1 ] || die "1 argument required, \$# provided"
-
-if [ ! -f "\$webappDir/\$war" ]
-then
-    echo "Available war files are:"
-    for i in "\$webappDir/*.war"
-    do
-        echo \$i
-    done
-    echo ""
-    die "\$war was not found"
-fi
-
-echo "Undeploying \$war"
-sudo rm \$webappDir/\$war
-EOF
-    
 }
 
 function setupLogwatch {
@@ -701,7 +645,7 @@ EOF
 }
 
 function setupUser {
-
+    set +e
     /bin/egrep  -i "^${USERNAME}" /etc/passwd
     if [ $? -eq 0 ]; then
        echo "User $USERNAME already exists"
@@ -709,8 +653,8 @@ function setupUser {
        echo "Adding user $USERNAME"
        adduser $USERNAME
        usermod -a -G sudo $USERNAME
-       passwd $USERNAME
     fi
+    set -e
 }
 
 function setupBash {
@@ -854,13 +798,65 @@ EOF
     # Create bin directory for scripts
     mkdir -p /home/$USERNAME/bin
 
+    echo "Installing deployWar script"
+    cat << EOF > /home/$USERNAME/bin/deployWar
+#!/bin/bash
+
+webappDir="/var/lib/tomcat7/webapps"
+war=\$1
+
+die () {
+    echo >&2 "\$@"
+    exit 1
+}
+
+[ "\$#" -eq 1 ] || die "1 argument required, \$# provided"
+
+if [ ! -f "\$war" ]
+then
+    die "\$war was not found"
+fi
+
+echo "Deploying \$war to \$webappDir"
+sudo cp \$war \$webappDir
+EOF
+    
+    echo "Installing undeployWar script"
+    cat << EOF > /home/$USERNAME/bin/undeployWar
+#!/bin/bash
+
+webappDir="/var/lib/tomcat7/webapps"
+war=\$1
+
+die () {
+    echo >&2 "\$@"
+    exit 1
+}
+
+[ "\$#" -eq 1 ] || die "1 argument required, \$# provided"
+
+if [ ! -f "\$webappDir/\$war" ]
+then
+    echo "Available war files are:"
+    for i in "\$webappDir/*.war"
+    do
+        echo \$i
+    done
+    echo ""
+    die "\$war was not found"
+fi
+
+echo "Undeploying \$war"
+sudo rm \$webappDir/\$war
+EOF
+
     # Fix ownership
     chown -R $USERNAME:$USERNAME /home/$USERNAME
      
 }
 
 function addCronJobWordPressBackup {
-    
+    echo "Adding cron job for Wordpress backup"
 }
 
 #####################################################################
