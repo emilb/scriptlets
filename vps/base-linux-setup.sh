@@ -327,7 +327,7 @@ function setupFail2ban {
 
 # "ignoreip" can be an IP address, a CIDR mask or a DNS host                                                                                                               
 ignoreip = 127.0.0.1 82.199.190.107 home.emibre.com lan.ath.cx
-bantime  = 43200
+bantime  = 86400
 maxretry = 3
 
 backend = polling
@@ -852,6 +852,9 @@ EOF
 
     # Fix ownership
     chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+    # Fix executables in bin
+    chmod +x /home/$USERNAME/bin/*
      
 }
 
