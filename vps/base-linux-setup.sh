@@ -100,6 +100,11 @@ function setupTimeZone {
     dpkg-reconfigure tzdata
 }
 
+function setupRSyslog {
+    # No RepeatedMsgReduction because it hinders fail2ban to catch failed logins.
+    sed -i "s/RepeatedMsgReduction\ on/RepeatedMsgReduction\ off/" /etc/rsyslog.conf
+}
+
 #####################################################################
 # Disable DNS lookups on ssh login and disable root login
 #####################################################################
@@ -867,6 +872,7 @@ function addCronJobWordPressBackup {
 #####################################################################
 installPackages
 setupTimeZone
+setupRSyslog
 setupSSH
 setupHostName
 setupIPTables
