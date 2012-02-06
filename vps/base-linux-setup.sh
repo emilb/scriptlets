@@ -355,7 +355,7 @@ action = %(action_)s
 
 [ssh-ddos]
 
-enabled = true
+enabled = false
 port    = ssh
 filter  = sshd-ddos
 logpath  = /var/log/auth.log
