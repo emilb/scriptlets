@@ -14,7 +14,7 @@ PLEX_VERSION='0.9.6.9.240'
 PLEX_FILENAME="plexmediaserver_$PLEX_VERSION-8fd9c6a_amd64.deb"
 
 echo "Installing avahi..."
-apt-get -qq -y install avahi-daemin avahi-utils > /dev/null
+apt-get -qq -y install avahi-daemon avahi-utils > /dev/null
 
 echo "Downloading plex..."
 wget http://cdn.plexapp.com/PlexMediaServer/$PLEX_VERSION/$PLEX_FILENAME
