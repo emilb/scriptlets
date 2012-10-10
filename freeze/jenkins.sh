@@ -48,6 +48,6 @@ stop on stopping network-services
 
 script
 export JENKINS_HOME=/opt/services/jenkins/home
-sudo -Hu jenkins java -Xms128m -Xmx2048m -server -jar /opt/services/jenkins/jenkins.war -Djava.awt.headless=true --httpPort=8081 --httpListenAddress=127.0.0.1
+sudo -Hu jenkins java -Xms128m -Xmx2048m -server -jar /opt/services/jenkins/jenkins.war -Djava.awt.headless=true --httpPort=8081 --httpListenAddress=127.0.0.1 --prefix=/jenkins
 end script
 EOF
