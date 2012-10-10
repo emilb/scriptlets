@@ -24,7 +24,7 @@ cat << EOF > /etc/nginx/sites-available/jenkins
         proxy_read_timeout 120;
 
         # needed to forward user's IP address
-        proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Real-IP  \$remote_addr;
 
         # needed for HTTPS
         proxy_set_header  X-Forwarded-For \$proxy_add_x_forwarded_for;
