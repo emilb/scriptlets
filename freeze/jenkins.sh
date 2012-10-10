@@ -5,6 +5,12 @@
 # http://jenkins-ci.org/
 ###
 
+# Make sure only root can run our script
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
 echo "Adding user jenkins"
 adduser --no-create-home --disabled-login --system --group --quiet jenkins
 
@@ -19,6 +25,9 @@ popd
 
 echo "Installing nginx proxy for jenkins"
 cat << EOF > /etc/nginx/sites-available/jenkins
+server {
+    listen 80;
+
     location /jenkins {
         # give site more time to respond
         proxy_read_timeout 120;
@@ -34,8 +43,9 @@ cat << EOF > /etc/nginx/sites-available/jenkins
 
         proxy_pass http://localhost:8081;
     }
+}
 EOF
-
+rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/jenkins /etc/nginx/sites-enabled/jenkins 
 
 echo "Installing upstart service for jenkins"
@@ -48,6 +58,6 @@ stop on stopping network-services
 
 script
 export JENKINS_HOME=/opt/services/jenkins/home
-sudo -Hu jenkins java -Xms128m -Xmx2048m -server -jar /opt/services/jenkins/jenkins.war -Djava.awt.headless=true --httpPort=8081 --httpListenAddress=127.0.0.1 --prefix=/jenkins
+sudo -Hu jenkins java -Xms128m -Xmx2048m -server -DJENKINS_HOME=/opt/services/jenkins/home -Djava.awt.headless=true -jar /opt/services/jenkins/jenkins.war --httpPort=8081 --httpListenAddress=127.0.0.1 --prefix=/jenkins
 end script
 EOF
