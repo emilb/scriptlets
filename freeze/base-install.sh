@@ -37,12 +37,12 @@ echo "Installing git-core subversion cvs..."
 apt-get -qq -y install git-core subversion cvs > /dev/null
 
 # PHP
-echo "Installing php5-cli php5-cgi psmisc spawn-fcgi php5-mysql php5-curl memcached php5-memcached..."
-apt-get -qq -y install php5 php5-dev php-pear php5-gd php5-mysql php5-curl > /dev/null
+echo "Installing php5-cli php5-cgi psmisc spawn-fcgi php5-mysql php5-curl php5-fpm..."
+apt-get -qq -y install php5 php5-dev php-pear php5-gd php5-mysql php5-curl php5-fpm > /dev/null
 
-# Apache
-echo "Installing apache2"
-apt-get -qq -y install apache2 > /dev/null
+# nginx
+echo "Installing nginx"
+apt-get -qq -y install nginx > /dev/null
 
 # ruby
 echo "Installing ruby1.9.1..."

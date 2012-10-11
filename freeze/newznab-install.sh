@@ -161,26 +161,6 @@ function installSphinx {
     checkinstall --pkgname=sphinx --pkgversion="$SPHINX_VERSION" --backup=no --deldoc=yes --fstrans=no --default
 }
 
-function setupApache {
-    # Create virtual host
-    cat << EOF > /etc/apache2/sites-available/newznab
-<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    ServerName $HOSTNAME
-
-    DocumentRoot /var/www/newznab/www
-    ErrorLog /var/log/apache2/error.log
-    LogLevel warn
-</VirtualHost>
-
-EOF
-
-    a2dissite default
-    a2ensite newznab
-    a2enmod rewrite
-    service apache2 restart
-}
-
 function setupNewznab {
     echo "Creating newznab_screen_local.sh"
     cat /var/www/newznab/misc/update_scripts/nix_scripts/newznab_screen.sh | sed 's/export NEWZNAB_PATH=.*/export NEWZNAB_PATH="\/var\/www\/newznab\/misc\/update_scripts"/' > /var/www/newznab/misc/update_scripts/nix_scripts/newznab_screen_local.sh
@@ -298,27 +278,59 @@ function setupPHP {
     mv "$FILENAME"_1 $FILENAME
 }
 
-function setupMemcached {
-    FILENAME="/etc/memcached.conf"
+function setupForNginx {
+    cat << EOF > /etc/nginx/sites-available/newznab
+server {
+    # Change these settings to match your machine
+    listen 80 default_server;
+    server_name localhost;
 
-    cp $FILENAME "$FILENAME"_org
+    # Everything below here doesn't need to be changed
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
 
-    echo "Setting memory for memcached = $MEMCACHED_MAX_MEMORY"
-    cat $FILENAME | sed "s/-m.*/-m $MEMCACHED_MAX_MEMORY/" > "$FILENAME"_1
-    mv "$FILENAME"_1 $FILENAME
+    root /var/www/newznab/www/;
+    index index.html index.htm index.php;
 
-    service memcached restart
+    location ~* \.(?:ico|css|js|gif|inc|txt|gz|xml|png|jpe?g) {
+            expires max;
+            add_header Pragma public;
+            add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+    }
+
+    location / { try_files \$uri \$uri/ \@rewrites; }
+
+    location \@rewrites {
+            rewrite ^/([^/\.]+)/([^/]+)/([^/]+)/? /index.php?page=\$1&id=\$2&subpage=\$3 last;
+            rewrite ^/([^/\.]+)/([^/]+)/?\$ /index.php?page=\$1&id=\$2 last;
+            rewrite ^/([^/\.]+)/?\$ /index.php?page=\$1 last;
+    }
+
+    location /admin { }
+    location /install { }
+
+    location ~ \.php\$ {
+            include /etc/nginx/fastcgi_params;
+            fastcgi_pass 127.0.0.1:9000;
+
+            # The next two lines should go in your fastcgi_params
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+    }
+}
+EOF
 }
 
 installFFMpeg
 installSphinx
 setupPHP /etc/php5/cli/php.ini
-setupPHP /etc/php5/apache2/php.ini
-setupMemcached
+setupPHP /etc/php5/fpm/php.ini
+#setupMemcached
 installNewznab
 setupNewznab
-setupApache
+#setupApache
 setupSphinx
+setupForNginx
 
 
 echo "newznab install complete"

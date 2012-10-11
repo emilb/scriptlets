@@ -5,8 +5,10 @@
 export USERNAME=emil
 export HOSTNAME=newzindexer
 
-export FFMPEG_VERSION=0.9.1
-export SPHINX_VERSION=2.0.4-release
+#export FFMPEG_VERSION=0.9.1
+export FFMPEG_VERSION=0.11.2
+#export SPHINX_VERSION=2.0.4-release
+export SPHINX_VERSION=2.0.5-release
 export PERCONA_VERSION=5.5
 export THREADS_COMPILE=`cat /proc/cpuinfo | grep processor | wc -l`
 
