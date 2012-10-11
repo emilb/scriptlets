@@ -279,6 +279,10 @@ function setupPHP {
 }
 
 function setupForNginx {
+
+    mkdir -p /var/log/nginx
+    chmod 755 /var/log/ngin
+
     cat << EOF > /etc/nginx/sites-available/newznab
 server {
     # Change these settings to match your machine
@@ -319,6 +323,9 @@ server {
     }
 }
 EOF
+
+    unlink /etc/nginx/sites-enabled/default
+    ln -s /etc/nginx/sites-available/newznab /etc/nginx/sites-enabled/newznab
 }
 
 installFFMpeg
