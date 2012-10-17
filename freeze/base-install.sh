@@ -22,11 +22,14 @@ apt-get -qq -y dist-upgrade > /dev/null
 #####################################################################
 # Install packages
 #####################################################################
-echo "Installing screen htop unzip unrar emacs wget rsync man mc..."
-apt-get -qq -y install screen tmux htop unzip unrar emacs wget rsync man mc > /dev/null
+echo "Installing screen htop unzip unrar emacs wget rsync man mc bwm-ng..."
+apt-get -qq -y install screen tmux htop unzip unrar emacs wget rsync man mc bwm-ng > /dev/null
 
 echo "Installing python-software-properties..."
 apt-get -qq -y install python-software-properties > /dev/null
+
+#echo "Installing bind9 dnsutils bind9-doc..."
+#apt-get -qq -y install bind9 dnsutils bind9-doc > /dev/null
 
 # Get a sane build environment
 echo "Installing autoconf build-essential ..."
@@ -49,8 +52,8 @@ echo "Installing ruby1.9.1..."
 apt-get -qq -y install ruby1.9.1 > /dev/null
 
 # Filesharing
-echo "Installing samba sshfs vsftpd..."
-apt-get -qq -y install samba > /dev/null
+echo "Installing samba nfs-kernel-server..."
+apt-get -qq -y install samba nfs-kernel-server > /dev/null
 
 # Media
 echo "Installing media utils and lame..."
